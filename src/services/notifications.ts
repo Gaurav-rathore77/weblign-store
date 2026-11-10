@@ -29,16 +29,24 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
   }
 
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#2563EB',
-    });
+    try {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#2563EB',
+      });
+    } catch (e) {
+      // Ignore channel errors in Expo Go / unsupported environments.
+    }
   }
 
-  const token = (await Notifications.getExpoPushTokenAsync()).data;
-  return token;
+  try {
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    return token;
+  } catch (e) {
+    return null;
+  }
 }
 
 export async function savePushToken(userId: string, token: string): Promise<void> {

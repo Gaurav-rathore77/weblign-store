@@ -45,6 +45,7 @@ function HorizontalProducts({
   wishlistIds,
   onToggleWishlist,
   emptyText,
+  errorMessage,
 }: {
   data: any[];
   isLoading: boolean;
@@ -55,6 +56,7 @@ function HorizontalProducts({
   wishlistIds: string[];
   onToggleWishlist: (id: string) => void;
   emptyText: string;
+  errorMessage?: string;
 }) {
   if (isLoading) {
     return (
@@ -71,7 +73,7 @@ function HorizontalProducts({
   if (isError) {
     return (
       <View style={{ paddingHorizontal: Spacing.lg }}>
-        <ErrorState message="Could not load products." onRetry={onRetry} />
+        <ErrorState message={errorMessage ?? "Could not load products."} onRetry={onRetry} />
       </View>
     );
   }
@@ -209,7 +211,7 @@ export default function HomeScreen() {
           </View>
         ) : bannersQuery.isError ? (
           <View style={{ paddingHorizontal: Spacing.lg, marginBottom: Spacing.lg }}>
-            <ErrorState message="Could not load banners." onRetry={() => bannersQuery.refetch()} />
+            <ErrorState message={bannersQuery.error?.message ?? "Could not load banners."} onRetry={() => bannersQuery.refetch()} />
           </View>
         ) : (
           <BannerCarousel banners={bannersQuery.data ?? []} />
@@ -225,7 +227,7 @@ export default function HomeScreen() {
           </ScrollView>
         ) : categoriesQuery.isError ? (
           <View style={{ paddingHorizontal: Spacing.lg }}>
-            <ErrorState message="Could not load categories." onRetry={() => categoriesQuery.refetch()} />
+            <ErrorState message={categoriesQuery.error?.message ?? "Could not load categories."} onRetry={() => categoriesQuery.refetch()} />
           </View>
         ) : (
           <FlatList
@@ -262,6 +264,7 @@ export default function HomeScreen() {
           wishlistIds={wishlistIds}
           onToggleWishlist={handleToggleWishlist}
           emptyText="No trending products yet"
+          errorMessage={trendingQuery.error?.message}
         />
 
         <View style={{ height: Spacing.lg }} />
@@ -278,6 +281,7 @@ export default function HomeScreen() {
           wishlistIds={wishlistIds}
           onToggleWishlist={handleToggleWishlist}
           emptyText="No best sellers yet"
+          errorMessage={bestSellersQuery.error?.message}
         />
 
         <View style={{ height: Spacing.lg }} />
@@ -294,6 +298,7 @@ export default function HomeScreen() {
           wishlistIds={wishlistIds}
           onToggleWishlist={handleToggleWishlist}
           emptyText="No new arrivals yet"
+          errorMessage={newArrivalsQuery.error?.message}
         />
 
         <View style={{ height: Spacing.lg }} />
@@ -310,6 +315,7 @@ export default function HomeScreen() {
           wishlistIds={wishlistIds}
           onToggleWishlist={handleToggleWishlist}
           emptyText="No offers right now"
+          errorMessage={offersQuery.error?.message}
         />
 
         <View style={{ height: Spacing.lg }} />
@@ -326,6 +332,7 @@ export default function HomeScreen() {
           wishlistIds={wishlistIds}
           onToggleWishlist={handleToggleWishlist}
           emptyText="No recommendations yet"
+          errorMessage={recommendedQuery.error?.message}
         />
 
         {/* Recently Viewed */}
